@@ -4,21 +4,37 @@ import {
   createAsyncThunk,
   EntityId,
 } from "@reduxjs/toolkit";
-import { IPost } from "./postsTypes";
+import { IPost, IPostsState } from "./postsTypes";
 import axios from "axios";
 import { RootState } from "../../app/store";
 
-interface IPostsState {
-  status: "idle" | "succeeded" | "pending" | "failed";
-  error: null | string;
+interface IReturnedFetchPosts {
+  data: IPost[];
+  totalCount: string;
 }
 
-export const fetchPosts = createAsyncThunk("posts/fetchPosts", async () => {
-  const response = await axios.get(
-    "https://jsonplaceholder.typicode.com/posts"
-  );
-  return response.data as IPost[];
-});
+export const fetchAllPosts = createAsyncThunk(
+  "posts/fetchAllPosts",
+  async () => {
+    const response = await axios.get(
+      `https://jsonplaceholder.typicode.com/posts`
+    );
+    return response.data as IPost[];
+  }
+);
+
+export const fetchPostsByPage = createAsyncThunk(
+  `posts/fetchPostsByPage`,
+  async (pageNum: number) => {
+    const response = await axios.get(
+      `https://jsonplaceholder.typicode.com/posts?_page=${pageNum}`
+    );
+    return {
+      data: response.data,
+      totalCount: response.headers["x-total-count"],
+    } as IReturnedFetchPosts;
+  }
+);
 
 export const addNewPost = createAsyncThunk(
   "posts/addNewPost",
@@ -43,34 +59,50 @@ export const addNewPost = createAsyncThunk(
 );
 
 const postsAdapter = createEntityAdapter<IPost>({
-  sortComparer: (a, b) => a.userId - b.userId,
+  sortComparer: (a, b) => b.id - a.id,
 });
 
 const initialState = postsAdapter.getInitialState({
   status: "idle",
   error: null,
+  totalCount: 0,
+  currentPage: 1,
+  allPosts: [],
 } as IPostsState);
 
 const postsSlice = createSlice({
   name: "posts",
   initialState,
-  reducers: {},
+  reducers: {
+    resetStatus(state) {
+      state.status = "idle";
+    },
+    setCurrentPage(state, action) {
+      state.currentPage = action.payload;
+    },
+  },
   extraReducers(builder) {
     builder
-      .addCase(fetchPosts.pending, (state) => {
+      .addCase(fetchPostsByPage.pending, (state) => {
         state.status = "pending";
       })
-      .addCase(fetchPosts.fulfilled, (state, action) => {
+      .addCase(fetchPostsByPage.fulfilled, (state, action) => {
         state.status = "succeeded";
-        postsAdapter.upsertMany(state, action.payload);
+        state.totalCount = Number(action.payload.totalCount);
+        postsAdapter.setAll(state, action.payload.data);
       })
-      .addCase(fetchPosts.rejected, (state) => {
+      .addCase(fetchPostsByPage.rejected, (state) => {
         state.status = "failed";
-        state.error = "Something went worng, please try again 😔!";
+        state.error = "Something went wrong, please try again 😔!";
       })
-      .addCase(addNewPost.fulfilled, postsAdapter.addOne);
+      .addCase(addNewPost.fulfilled, postsAdapter.addOne)
+      .addCase(fetchAllPosts.fulfilled, (state, action) => {
+        state.allPosts = action.payload;
+      });
   },
 });
+
+export const { resetStatus, setCurrentPage } = postsSlice.actions;
 
 export const {
   selectAll: selectAllPosts,

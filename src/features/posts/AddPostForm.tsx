@@ -1,6 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { selectAllUsers } from "../users/usersSlice";
-import { fetchUsers } from "../users/usersSlice";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { addNewPost } from "./postsSlice";
 
@@ -47,20 +46,20 @@ export default function AddPostForm() {
     setUserId(e.target.value);
 
   return (
-    <section className="bg-gradient-to-r from-slate-50 via-gray-100 to-stone-100">
+    <section className="bg-gradient-to-r from-gray-50 to-white">
       <div className="w-1/2 mx-auto my-0 py-10">
         <h1 className="text-2xl font-semibold mb-4">Add post</h1>
         <form className="flex flex-col" onSubmit={onSubmit}>
           <label className="mb-2">Title</label>
           <input
-            className="mb-4 rounded-xl px-4 py-1 focus:outline-0"
+            className="mb-4 rounded-xl px-4 py-1 focus:outline-0 border border-gray-100"
             type="text"
             value={title}
             onChange={onChangeTitle}
           />
           <label className="mb-2">Body</label>
           <textarea
-            className="mb-4 rounded-xl px-4 py-1 focus:outline-0"
+            className="mb-4 rounded-xl px-4 py-1 focus:outline-0 border border-gray-100"
             value={body}
             onChange={onChangeBody}
           />
@@ -68,7 +67,7 @@ export default function AddPostForm() {
           <select
             value={userId}
             onChange={onChangeAuthor}
-            className="rounded-xl px-4 py-1 mb-4 focus:outline-0"
+            className="rounded-xl px-4 py-1 mb-4 focus:outline-0 border border-gray-100"
           >
             <option value="" disabled>
               Author
@@ -81,7 +80,10 @@ export default function AddPostForm() {
               );
             })}
           </select>
-          <button className="self-end" disabled={!canSave}>
+          <button
+            className="self-end p-2 rounded-xl bg-gradient-to-r from-gray-50 to-gray-100 border border-gray-200 font-semibold cursor-pointer"
+            disabled={!canSave}
+          >
             Add
           </button>
         </form>

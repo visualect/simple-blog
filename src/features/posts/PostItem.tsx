@@ -12,7 +12,7 @@ export default function PostItem({ postId }: { postId: EntityId }) {
   const { title, body, userId } = post;
 
   return (
-    <li className="flex flex-col p-6 rounded-xl shadow-sm bg-white">
+    <li className="flex flex-col p-6 w-full rounded-xl shadow-sm bg-white">
       <div className="flex flex-col mb-2">
         <h1 className="font-semibold mb-2">{title}</h1>
         <p className="mb-2">{body}</p>
