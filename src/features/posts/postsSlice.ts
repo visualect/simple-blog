@@ -58,46 +58,57 @@ export const addNewPost = createAsyncThunk(
   }
 );
 
-const postsAdapter = createEntityAdapter<IPost>({
+const postsByPageAdapter = createEntityAdapter<IPost>({
   sortComparer: (a, b) => b.id - a.id,
 });
 
-const initialState = postsAdapter.getInitialState({
-  status: "idle",
-  error: null,
-  totalCount: 0,
-  currentPage: 1,
-  allPosts: [],
-} as IPostsState);
+const allPostsAdapter = createEntityAdapter<IPost>({
+  sortComparer: (a, b) => b.id - a.id,
+});
+
+const initialState: IPostsState = {
+  allPosts: allPostsAdapter.getInitialState({
+    status: "idle",
+    error: null,
+  }),
+  postsByPage: postsByPageAdapter.getInitialState({
+    status: "idle",
+    error: null,
+    totalCount: 0,
+    currentPage: 1,
+  }),
+};
 
 const postsSlice = createSlice({
   name: "posts",
   initialState,
   reducers: {
     resetStatus(state) {
-      state.status = "idle";
+      state.allPosts.status = "idle";
     },
     setCurrentPage(state, action) {
-      state.currentPage = action.payload;
+      state.postsByPage.currentPage = action.payload;
     },
   },
   extraReducers(builder) {
     builder
       .addCase(fetchPostsByPage.pending, (state) => {
-        state.status = "pending";
+        state.postsByPage.status = "pending";
       })
       .addCase(fetchPostsByPage.fulfilled, (state, action) => {
-        state.status = "succeeded";
-        state.totalCount = Number(action.payload.totalCount);
-        postsAdapter.setAll(state, action.payload.data);
+        state.postsByPage.status = "succeeded";
+        state.postsByPage.totalCount = Number(action.payload.totalCount);
+        postsByPageAdapter.setAll(state.postsByPage, action.payload.data);
       })
       .addCase(fetchPostsByPage.rejected, (state) => {
-        state.status = "failed";
-        state.error = "Something went wrong, please try again 😔!";
+        state.postsByPage.status = "failed";
+        state.postsByPage.error = "Something went wrong, please try again 😔!";
       })
-      .addCase(addNewPost.fulfilled, postsAdapter.addOne)
+      .addCase(addNewPost.fulfilled, (state, action) => {
+        postsByPageAdapter.addOne(state.postsByPage, action.payload);
+      })
       .addCase(fetchAllPosts.fulfilled, (state, action) => {
-        state.allPosts = action.payload;
+        allPostsAdapter.setAll(state.allPosts, action.payload);
       });
   },
 });
@@ -108,9 +119,23 @@ export const {
   selectAll: selectAllPosts,
   selectById: selectPostById,
   selectIds: selectPostsIds,
-} = postsAdapter.getSelectors((state: RootState) => state.posts);
+} = allPostsAdapter.getSelectors((state: RootState) => state.posts.allPosts);
 
-export const selectPostsError = (state: RootState) => state.posts.error;
-export const selectPostsStatus = (state: RootState) => state.posts.status;
+export const {
+  selectAll: selectAllPostsByPage,
+  selectById: selectPostByPageById,
+  selectIds: selectPostsByPageIds,
+} = postsByPageAdapter.getSelectors(
+  (state: RootState) => state.posts.postsByPage
+);
+
+export const selectAllPostsError = (state: RootState) =>
+  state.posts.allPosts.error;
+export const selectAllPostsStatus = (state: RootState) =>
+  state.posts.allPosts.status;
+export const selectPostsByPageError = (state: RootState) =>
+  state.posts.postsByPage.error;
+export const selectPostsByPageStatus = (state: RootState) =>
+  state.posts.postsByPage.status;
 
 export default postsSlice.reducer;

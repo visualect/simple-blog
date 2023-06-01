@@ -2,9 +2,9 @@ import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import {
   fetchPostsByPage,
-  selectPostsError,
-  selectPostsIds,
-  selectPostsStatus,
+  selectPostsByPageError,
+  selectPostsByPageIds,
+  selectPostsByPageStatus,
 } from "./postsSlice";
 import PostItem from "./PostItem";
 import Pagination from "../../components/UI/Pagination";
@@ -12,10 +12,12 @@ import Spinner from "../../components/UI/Spinner";
 
 export default function PostsList() {
   const dispatch = useAppDispatch();
-  const currentStatus = useAppSelector(selectPostsStatus);
-  const error = useAppSelector(selectPostsError);
-  const postsIds = useAppSelector(selectPostsIds);
-  const currentPage = useAppSelector((state) => state.posts.currentPage);
+  const currentStatus = useAppSelector(selectPostsByPageStatus);
+  const error = useAppSelector(selectPostsByPageError);
+  const postsIds = useAppSelector(selectPostsByPageIds);
+  const currentPage = useAppSelector(
+    (state) => state.posts.postsByPage.currentPage
+  );
 
   let content;
 

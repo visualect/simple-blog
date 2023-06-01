@@ -1,12 +1,12 @@
 import { EntityId } from "@reduxjs/toolkit";
 import { useAppSelector } from "../../app/hooks";
-import { selectPostById } from "./postsSlice";
+import { selectPostByPageById } from "./postsSlice";
 import { IPost } from "./postsTypes";
 import Author from "../../components/UI/Author";
 
 export default function PostItem({ postId }: { postId: EntityId }) {
   const post = useAppSelector((state) =>
-    selectPostById(state, postId)
+    selectPostByPageById(state, postId)
   ) as IPost;
 
   const { title, body, userId } = post;

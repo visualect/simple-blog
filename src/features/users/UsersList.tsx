@@ -1,9 +1,15 @@
 import { Link } from "react-router-dom";
-import { useAppSelector } from "../../app/hooks";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { selectAllUsers } from "./usersSlice";
+import { useEffect } from "react";
+import { fetchAllPosts } from "../posts/postsSlice";
 
 export default function UsersList() {
   const users = useAppSelector(selectAllUsers);
+  const dispatch = useAppDispatch();
+  useEffect(() => {
+    dispatch(fetchAllPosts());
+  }, [dispatch]);
 
   return (
     <div className="min-h-screen bg-gradient-to-r from-indigo-50 to-white">

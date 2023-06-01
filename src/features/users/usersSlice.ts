@@ -2,7 +2,6 @@ import {
   createSlice,
   createEntityAdapter,
   createAsyncThunk,
-  PayloadAction,
 } from "@reduxjs/toolkit";
 import axios from "axios";
 import { IUser } from "./usersTypes";
