@@ -36,12 +36,15 @@ export const fetchPostsByPage = createAsyncThunk(
   }
 );
 
+interface INewItemTypes {
+  title: string;
+  body: string;
+  userId: string;
+}
+
 export const addNewPost = createAsyncThunk(
   "posts/addNewPost",
-  async (
-    newItem: { title: string; body: string; userId: string },
-    { getState }
-  ) => {
+  async (newItem: INewItemTypes, { getState }) => {
     const ids: EntityId[] = selectPostsIds(getState() as RootState);
     const { title, body, userId } = newItem;
     const newId = Object.values(ids).length++;
@@ -84,7 +87,7 @@ const postsSlice = createSlice({
   initialState,
   reducers: {
     resetStatus(state) {
-      state.allPosts.status = "idle";
+      state.postsByPage.status = "idle";
     },
     setCurrentPage(state, action) {
       state.postsByPage.currentPage = action.payload;
@@ -103,12 +106,22 @@ const postsSlice = createSlice({
       .addCase(fetchPostsByPage.rejected, (state) => {
         state.postsByPage.status = "failed";
         state.postsByPage.error = "Something went wrong, please try again 😔!";
+        // TODO: Get error message form error object
       })
       .addCase(addNewPost.fulfilled, (state, action) => {
         postsByPageAdapter.addOne(state.postsByPage, action.payload);
       })
+      .addCase(fetchAllPosts.pending, (state) => {
+        state.allPosts.status = "pending";
+      })
       .addCase(fetchAllPosts.fulfilled, (state, action) => {
+        state.allPosts.status = "succeeded";
         allPostsAdapter.setAll(state.allPosts, action.payload);
+      })
+      .addCase(fetchAllPosts.rejected, (state) => {
+        state.allPosts.status = "failed";
+        state.allPosts.error = "Something went wrong, please try again 😔!";
+        // TODO: Get error message form error object
       });
   },
 });
@@ -133,6 +146,7 @@ export const selectAllPostsError = (state: RootState) =>
   state.posts.allPosts.error;
 export const selectAllPostsStatus = (state: RootState) =>
   state.posts.allPosts.status;
+
 export const selectPostsByPageError = (state: RootState) =>
   state.posts.postsByPage.error;
 export const selectPostsByPageStatus = (state: RootState) =>

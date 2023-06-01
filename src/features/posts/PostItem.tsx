@@ -3,6 +3,7 @@ import { useAppSelector } from "../../app/hooks";
 import { selectPostByPageById } from "./postsSlice";
 import { IPost } from "./postsTypes";
 import Author from "../../components/UI/Author";
+import { Link } from "react-router-dom";
 
 export default function PostItem({ postId }: { postId: EntityId }) {
   const post = useAppSelector((state) =>
@@ -14,7 +15,12 @@ export default function PostItem({ postId }: { postId: EntityId }) {
   return (
     <li className="flex flex-col p-6 w-full rounded-xl shadow-sm bg-white">
       <div className="flex flex-col mb-2">
-        <h1 className="font-semibold mb-2">{title}</h1>
+        <Link
+          to={`posts/${postId}`}
+          className="font-semibold mb-2 hover:text-indigo-500"
+        >
+          {title}
+        </Link>
         <p className="mb-2">{body}</p>
         <Author userId={userId} />
       </div>

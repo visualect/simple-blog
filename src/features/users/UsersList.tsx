@@ -1,15 +1,9 @@
 import { Link } from "react-router-dom";
-import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { useAppSelector } from "../../app/hooks";
 import { selectAllUsers } from "./usersSlice";
-import { useEffect } from "react";
-import { fetchAllPosts } from "../posts/postsSlice";
 
 export default function UsersList() {
   const users = useAppSelector(selectAllUsers);
-  const dispatch = useAppDispatch();
-  useEffect(() => {
-    dispatch(fetchAllPosts());
-  }, [dispatch]);
 
   return (
     <div className="min-h-screen bg-gradient-to-r from-indigo-50 to-white">
@@ -17,7 +11,11 @@ export default function UsersList() {
         <h1 className="text-2xl font-semibold mb-4">Users</h1>
         <ul className="flex flex-col items-center gap-8">
           {users.map((user) => (
-            <Link to={`${user.id}`} key={user.id}>
+            <Link
+              to={`${user.id}`}
+              key={user.id}
+              className="font-ibmplexmono hover:text-indigo-500"
+            >
               {user.name}
             </Link>
           ))}

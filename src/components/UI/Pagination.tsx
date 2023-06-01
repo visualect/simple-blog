@@ -3,8 +3,12 @@ import { resetStatus, setCurrentPage } from "../../features/posts/postsSlice";
 import getPaginationNumber from "../../utils/getPaginationNumber";
 
 export default function Pagination() {
-  const totalPosts = useAppSelector((state) => state.posts.totalCount);
-  const currentPage = useAppSelector((state) => state.posts.currentPage);
+  const totalPosts = useAppSelector(
+    (state) => state.posts.postsByPage.totalCount
+  );
+  const currentPage = useAppSelector(
+    (state) => state.posts.postsByPage.currentPage
+  );
 
   const totalPage = getPaginationNumber(totalPosts, 10);
   const dispatch = useAppDispatch();
