@@ -1,35 +1,35 @@
-import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { resetStatus, setCurrentPage } from "../../features/posts/postsSlice";
-import getPaginationNumber from "../../utils/getPaginationNumber";
+import { useAppSelector } from "../../app/hooks";
+import { selectAllPosts } from "../../features/posts/postsSlice";
 
-export default function Pagination() {
-  const totalPosts = useAppSelector(
-    (state) => state.posts.postsByPage.totalCount
-  );
-  const currentPage = useAppSelector(
-    (state) => state.posts.postsByPage.currentPage
-  );
+interface IPaginationProps {
+  currentPage: number;
+  setCurrentPage: (arg: number) => void;
+}
 
-  const totalPage = getPaginationNumber(totalPosts, 10);
-  const dispatch = useAppDispatch();
+export default function Pagination({
+  currentPage,
+  setCurrentPage,
+}: IPaginationProps) {
+  const posts = useAppSelector(selectAllPosts);
+
+  const totalPages: number[] = [];
+
+  for (let i = 1; i <= Math.ceil(posts.length / 10); i++) {
+    totalPages.push(i);
+  }
 
   const inactive = "bg-gradient-to-r from-gray-50 to-gray-100";
   const active = "bg-indigo-200";
 
-  const onNumClick = (num: number) => {
-    dispatch(resetStatus());
-    dispatch(setCurrentPage(num));
-  };
-
   return (
     <ul className="flex gap-6 justify-center mb-4">
-      {totalPage.map((num, idx) => (
+      {totalPages.map((num, idx) => (
         <li
           className={`cursor-pointer ${
             num === currentPage ? active : inactive
           } p-1 w-8 text-center rounded-xl border border-gray-200 text-sm`}
           key={idx}
-          onClick={() => onNumClick(num)}
+          onClick={() => setCurrentPage(num)}
         >
           {num}
         </li>

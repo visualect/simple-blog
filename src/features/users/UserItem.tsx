@@ -6,7 +6,6 @@ import { selectAllPosts } from "../posts/postsSlice";
 
 export default function UserItem() {
   const params = useParams();
-  console.log(params);
 
   const userId = Number(params.id);
   const allPosts = useAppSelector(selectAllPosts);

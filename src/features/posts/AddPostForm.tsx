@@ -3,7 +3,11 @@ import { selectAllUsers } from "../users/usersSlice";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { addNewPost } from "./postsSlice";
 
-export default function AddPostForm() {
+interface IProps {
+  setFormVisible: (arg: boolean) => void;
+}
+
+export default function AddPostForm({ setFormVisible }: IProps) {
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const [userId, setUserId] = useState("");
@@ -23,7 +27,7 @@ export default function AddPostForm() {
     if (canSave) {
       try {
         setRequestStatus("pending");
-        await dispatch(addNewPost({ title, body, userId })).unwrap();
+        dispatch(addNewPost({ title, body, userId: Number(userId) }));
         setTitle("");
         setBody("");
         setUserId("");
@@ -32,6 +36,7 @@ export default function AddPostForm() {
         console.error("Error 🥵");
       } finally {
         setRequestStatus("idle");
+        setFormVisible(false);
       }
     }
   };
@@ -46,48 +51,46 @@ export default function AddPostForm() {
     setUserId(e.target.value);
 
   return (
-    <section className="bg-gradient-to-r from-gray-50 to-white">
-      <div className="w-1/2 mx-auto my-0 py-10">
-        <h1 className="text-2xl font-semibold mb-4">Add post</h1>
-        <form className="flex flex-col" onSubmit={onSubmit}>
-          <label className="mb-2">Title</label>
-          <input
-            className="mb-4 rounded-xl px-4 py-1 focus:outline-0 border border-gray-100"
-            type="text"
-            value={title}
-            onChange={onChangeTitle}
-          />
-          <label className="mb-2">Body</label>
-          <textarea
-            className="mb-4 rounded-xl px-4 py-1 focus:outline-0 border border-gray-100"
-            value={body}
-            onChange={onChangeBody}
-          />
-          <label className="mb-2">Author</label>
-          <select
-            value={userId}
-            onChange={onChangeAuthor}
-            className="rounded-xl px-4 py-1 mb-4 focus:outline-0 border border-gray-100"
-          >
-            <option value="" disabled>
-              Author
-            </option>
-            {users.map((user) => {
-              return (
-                <option key={user.id} value={user.id}>
-                  {user.name}
-                </option>
-              );
-            })}
-          </select>
-          <button
-            className="self-end p-2 rounded-xl bg-gradient-to-r from-gray-50 to-gray-100 border border-gray-200 font-semibold cursor-pointer"
-            disabled={!canSave}
-          >
-            Add
-          </button>
-        </form>
-      </div>
-    </section>
+    <div className="w-full my-0 py-10">
+      <h1 className="text-2xl font-semibold mb-4">Add post</h1>
+      <form className="flex flex-col" onSubmit={onSubmit}>
+        <label className="mb-2">Title</label>
+        <input
+          className="mb-4 rounded-xl px-4 py-1 focus:outline-0 border border-gray-100"
+          type="text"
+          value={title}
+          onChange={onChangeTitle}
+        />
+        <label className="mb-2">Body</label>
+        <textarea
+          className="mb-4 rounded-xl px-4 py-1 focus:outline-0 border border-gray-100"
+          value={body}
+          onChange={onChangeBody}
+        />
+        <label className="mb-2">Author</label>
+        <select
+          value={userId}
+          onChange={onChangeAuthor}
+          className="rounded-xl px-4 py-1 mb-4 focus:outline-0 border border-gray-100"
+        >
+          <option value="" disabled>
+            Author
+          </option>
+          {users.map((user) => {
+            return (
+              <option key={user.id} value={user.id}>
+                {user.name}
+              </option>
+            );
+          })}
+        </select>
+        <button
+          className="self-end p-2 rounded-xl bg-gradient-to-r from-gray-50 to-gray-100 border border-gray-200 font-semibold cursor-pointer"
+          disabled={!canSave}
+        >
+          Add
+        </button>
+      </form>
+    </div>
   );
 }

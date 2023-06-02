@@ -8,11 +8,12 @@ import { fetchUsers } from "./features/users/usersSlice.ts";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import UsersList from "./features/users/UsersList.tsx";
 import UserItem from "./features/users/UserItem.tsx";
-import { fetchAllPosts } from "./features/posts/postsSlice.ts";
+import { fetchPosts } from "./features/posts/postsSlice.ts";
 import PostPage from "./features/posts/PostPage.tsx";
+import EditPost from "./features/posts/EditPost.tsx";
 
 store.dispatch(fetchUsers());
-store.dispatch(fetchAllPosts());
+store.dispatch(fetchPosts());
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <Provider store={store}>
@@ -24,6 +25,7 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
           <Route path="/users" element={<UsersList />} />
           <Route path="/users/:id" element={<UserItem />} />
           <Route path="/posts/:id" element={<PostPage />} />
+          <Route path="/edit/:id" element={<EditPost />} />
         </Routes>
       </React.StrictMode>
     </BrowserRouter>
