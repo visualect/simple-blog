@@ -39,9 +39,11 @@ const usersSlice = createSlice({
         state.status = "succeeded";
         usersAdapter.upsertMany(state, action.payload);
       })
-      .addCase(fetchUsers.rejected, (state) => {
+      .addCase(fetchUsers.rejected, (state, action) => {
         state.status = "failed";
-        // TODO: Put error message into state.error
+        if (action.error.message) {
+          state.error = action.error.message;
+        }
       });
   },
 });

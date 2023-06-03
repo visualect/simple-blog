@@ -32,8 +32,7 @@ export default function AddPostForm({ setFormVisible }: IProps) {
         setBody("");
         setUserId("");
       } catch (err) {
-        // console.error(err.message);
-        console.error("Error 🥵");
+        throw new Error();
       } finally {
         setRequestStatus("idle");
         setFormVisible(false);

@@ -7,5 +7,5 @@ export interface IPost {
 
 interface IPostsState {
   status: "idle" | "succeeded" | "pending" | "failed";
-  error: null | string;
+  error: string | null;
 }

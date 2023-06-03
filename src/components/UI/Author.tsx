@@ -6,16 +6,16 @@ export default function Author({ userId }: { userId: number }) {
   let name;
   const user = useAppSelector((state) => selectUserById(state, userId));
   if (user) {
-    name = user.name;
+    name = (
+      <Link
+        to={`/users/${userId}`}
+        className="font-ibmplexmono hover:text-indigo-500"
+      >
+        {user.name}
+      </Link>
+    );
   } else {
-    name = "Unknown user";
+    name = <span>Unknown author</span>;
   }
-  return (
-    <Link
-      to={`/users/${userId}`}
-      className="font-ibmplexmono hover:text-indigo-500"
-    >
-      {name}
-    </Link>
-  );
+  return name;
 }

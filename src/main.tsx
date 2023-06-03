@@ -11,9 +11,11 @@ import UserItem from "./features/users/UserItem.tsx";
 import { fetchPosts } from "./features/posts/postsSlice.ts";
 import PostPage from "./features/posts/PostPage.tsx";
 import EditPost from "./features/posts/EditPost.tsx";
+import { fetchComments } from "./features/comments/commentsSlice.ts";
 
 store.dispatch(fetchUsers());
 store.dispatch(fetchPosts());
+store.dispatch(fetchComments());
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <Provider store={store}>

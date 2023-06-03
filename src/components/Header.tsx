@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 export default function Header() {
   return (
     <header className="border-b border-gray-100">
-      <div className="w-full px-4 my-0 mx-auto container flex justify-evenly h-16 items-center">
+      <div className="w-full px-4 my-0 mx-auto container flex justify-between h-16 items-center">
         <a
           className="flex items-center group"
           href="https://github.com/visualect/simple-blog"

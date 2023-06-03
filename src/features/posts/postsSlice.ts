@@ -7,7 +7,7 @@ import { IPost, IPostsState } from "./postsTypes";
 import axios from "axios";
 import { RootState } from "../../app/store";
 
-export const fetchPosts = createAsyncThunk("posts/fetchAllPosts", async () => {
+export const fetchPosts = createAsyncThunk("posts/fetchPosts", async () => {
   const response = await axios.get(
     `https://jsonplaceholder.typicode.com/posts`
   );
@@ -52,10 +52,11 @@ const postsSlice = createSlice({
         state.status = "succeeded";
         postsAdapter.setAll(state, action.payload);
       })
-      .addCase(fetchPosts.rejected, (state) => {
+      .addCase(fetchPosts.rejected, (state, action) => {
         state.status = "failed";
-        state.error = "Something went wrong, please try again 😔!";
-        // TODO: Get error message form error object
+        if (action.error.message) {
+          state.error = action.error.message;
+        }
       });
   },
 });

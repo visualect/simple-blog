@@ -4,6 +4,7 @@ import { selectPostById } from "./postsSlice";
 import { IPost } from "./postsTypes";
 import { selectUserById } from "../users/usersSlice";
 import { IUser } from "../users/usersTypes";
+import { selectCommentsById } from "../comments/commentsSlice";
 
 export default function PostPage() {
   const params = useParams();
@@ -14,6 +15,8 @@ export default function PostPage() {
   const user = useAppSelector((state) =>
     selectUserById(state, post.userId)
   ) as IUser;
+  const comments = useAppSelector((state) => selectCommentsById(state, postId));
+  console.log(comments);
 
   return (
     <section className="min-h-screen bg-gradient-to-r from-indigo-50 to-white">
@@ -22,14 +25,18 @@ export default function PostPage() {
         <p className="mb-10">{post.body}</p>
         <div className="flex gap-2 self-end mb-4">
           <span>by</span>
-          <Link
-            className="font-ibmplexmono hover:text-indigo-500"
-            to={`/users/${user.id}`}
-          >
-            {user.name}
-          </Link>
+          {user ? (
+            <Link
+              className="font-ibmplexmono hover:text-indigo-500"
+              to={`/users/${user.id}`}
+            >
+              {user.name}
+            </Link>
+          ) : (
+            "Unknown author"
+          )}
         </div>
-        <div className="flex items-center cursor-pointer self-end">
+        <div className="flex items-center cursor-pointer self-end mb-[100px]">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -50,6 +57,22 @@ export default function PostPage() {
           >
             Edit
           </Link>
+        </div>
+        <div>
+          <h2 className="text-xl font-semibold mb-10">Comments</h2>
+          <ul className="flex flex-col gap-4">
+            {comments.map((comment) => (
+              <li
+                key={comment.id}
+                className="flex flex-col p-4 bg-white rounded-xl"
+              >
+                <p className="mb-8 text-sm">{comment.body}</p>
+                <span className="self-end font-ibmplexmono text-sm">
+                  {comment.email}
+                </span>
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
     </section>
