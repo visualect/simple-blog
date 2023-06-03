@@ -15,8 +15,9 @@ export default function PostsList() {
   const error = useAppSelector(selectPostsError);
   const postsIds = useAppSelector(selectPostsIds);
   const [currentPage, setCurrentPage] = useState(1);
-  const [postsPerPage, setPostsPerPage] = useState(10);
   const [formVisible, setFormVisible] = useState(false);
+
+  const postsPerPage = 10;
 
   let content;
   let form;
