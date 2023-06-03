@@ -53,7 +53,7 @@ export const { selectAll: selectAllComments, selectIds: selectCommentsIds } =
   commentsAdapter.getSelectors((state: RootState) => state.comments);
 
 export const selectCommentsByPostId = createSelector(
-  [selectAllComments, (state: RootState, postId: number) => postId],
+  [selectAllComments, (_, postId: number) => postId],
   (comments, postId) => {
     return comments.filter((comment) => comment.postId === postId);
   }

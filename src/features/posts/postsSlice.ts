@@ -74,7 +74,7 @@ export const selectPostsError = (state: RootState) => state.posts.error;
 export const selectPostsStatus = (state: RootState) => state.posts.status;
 
 export const selectPostsByUserId = createSelector(
-  [selectAllPosts, (state, userId) => userId],
+  [selectAllPosts, (_, userId) => userId],
   (posts, userId) => {
     return posts.filter((post) => post.userId === userId);
   }
