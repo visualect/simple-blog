@@ -2,6 +2,7 @@ import {
   createSlice,
   createEntityAdapter,
   createAsyncThunk,
+  createSelector,
 } from "@reduxjs/toolkit";
 import { IPost, IPostsState } from "./postsTypes";
 import axios from "axios";
@@ -71,5 +72,12 @@ export const {
 
 export const selectPostsError = (state: RootState) => state.posts.error;
 export const selectPostsStatus = (state: RootState) => state.posts.status;
+
+export const selectPostsByUserId = createSelector(
+  [selectAllPosts, (state, userId) => userId],
+  (posts, userId) => {
+    return posts.filter((post) => post.userId === userId);
+  }
+);
 
 export default postsSlice.reducer;

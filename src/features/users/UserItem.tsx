@@ -2,15 +2,16 @@ import { Link, useParams } from "react-router-dom";
 import { useAppSelector } from "../../app/hooks";
 import { selectUserById } from "./usersSlice";
 import { IUser } from "./usersTypes";
-import { selectAllPosts } from "../posts/postsSlice";
+import { selectPostsByUserId } from "../posts/postsSlice";
 
 export default function UserItem() {
   const params = useParams();
 
   const userId = Number(params.id);
-  const allPosts = useAppSelector(selectAllPosts);
 
-  const postsByCurrentUser = allPosts.filter((post) => post.userId === userId);
+  const postsByCurrentUser = useAppSelector((state) =>
+    selectPostsByUserId(state, userId)
+  );
 
   const user = useAppSelector((state) =>
     selectUserById(state, userId)

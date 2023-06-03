@@ -2,6 +2,7 @@ import {
   createSlice,
   createEntityAdapter,
   createAsyncThunk,
+  createSelector,
 } from "@reduxjs/toolkit";
 import axios from "axios";
 import { IComment } from "./commentsTypes";
@@ -51,10 +52,11 @@ const commentsSlice = createSlice({
 export const { selectAll: selectAllComments, selectIds: selectCommentsIds } =
   commentsAdapter.getSelectors((state: RootState) => state.comments);
 
-export const selectCommentsById = (state: RootState, postId: number) => {
-  return selectAllComments(state).filter(
-    (comment) => comment.postId === postId
-  );
-};
+export const selectCommentsByPostId = createSelector(
+  [selectAllComments, (state: RootState, postId: number) => postId],
+  (comments, postId) => {
+    return comments.filter((comment) => comment.postId === postId);
+  }
+);
 
 export default commentsSlice.reducer;

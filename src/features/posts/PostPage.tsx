@@ -4,7 +4,7 @@ import { selectPostById } from "./postsSlice";
 import { IPost } from "./postsTypes";
 import { selectUserById } from "../users/usersSlice";
 import { IUser } from "../users/usersTypes";
-import { selectCommentsById } from "../comments/commentsSlice";
+import { selectCommentsByPostId } from "../comments/commentsSlice";
 
 export default function PostPage() {
   const params = useParams();
@@ -15,7 +15,9 @@ export default function PostPage() {
   const user = useAppSelector((state) =>
     selectUserById(state, post.userId)
   ) as IUser;
-  const comments = useAppSelector((state) => selectCommentsById(state, postId));
+  const comments = useAppSelector((state) =>
+    selectCommentsByPostId(state, postId)
+  );
   console.log(comments);
 
   return (
